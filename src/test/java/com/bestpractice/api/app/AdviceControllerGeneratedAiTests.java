@@ -1,0 +1,92 @@
+package com.bestpractice.api.app;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+
+import com.best prática.domain.model.ErrorResponse;
+import com.best prática.domain.model.ErrorResponse;
+
+public class AdviceController {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequest.class)
+    public ErrorResponse badRequest() {
+        ErrorResponse res = new ErrorResponse();
+        res.setStatus(400);
+        res.setError("Bad request");
+        res.setMessage("Bad request parameter");
+        return res;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnAuthorized.class)
+    public ErrorResponse unAuthorized() {
+        ErrorResponse res = new ErrorResponse();
+        res.setStatus(401);
+        res.setError("Unauthorized");
+        res.setMessage("Incorrect authentication info");
+        return res;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(Forbidden.class)
+    public ErrorResponse forbidden() {
+        ErrorResponse res = new ErrorResponse();
+        res.setStatus(403);
+        res.setError("Forbidden");
+        res.setMessage("Not allowed");
+        return res;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ErrorResponse notFound01() {
+        return shareNotFound();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFound.class)
+    public ErrorResponse notFound02() {
+        return shareNotFound();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFound.class)
+    public ErrorResponse notFound03() {
+        return shareNotFound();
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(Conflict.class)
+    public ErrorResponse conflict() {
+        ErrorResponse res = new ErrorResponse();
+        res.setStatus(409);
+        res.setError("Conflict");
+        res.setMessage("Already exist data");
+        return res;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ErrorResponse serverError(Exception e) {
+        e.printStackTrace();
+        ErrorResponse res = new ErrorResponse();
+        res.setStatus(500);
+        res.setError("Internal server error");
+        res.setMessage("Internal server error");
+        return res;
+    }
+
+    private ErrorResponse shareNotFound() {
+        ErrorResponse res = new ErrorResponse();
+        res.setStatus(404);
+        res.setError("Not found");
+        res.setMessage("Not found path");
+        return res;
+    }
+}
