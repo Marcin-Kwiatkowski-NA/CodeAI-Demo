@@ -1,0 +1,112 @@
+package com.bestpractice.api.domain.service;
+
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeAll;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.*;
+
+class UserServiceImplGeneratedAiTests {
+
+  private UserServiceImpl userService;
+  private UserPersistentRepository userRepository;
+  private BCryptPasswordEncryptionComponent encryptionComponent;
+
+  @BeforeEach
+  void setUp() {
+    userRepository = new UserPersistentRepository() {
+      @Override
+      public UserById findById(String id) {
+        return new User();
+      }
+
+      @Override
+      public UserfindByEmail(String email) {
+        return new User();
+      }
+
+      @Override
+      public User newId() {
+        return new User();
+      }
+
+      @Override
+      public User insert(User user) {
+        return new User();
+      }
+    };
+    encryptionComponent = new BCryptPasswordEncryptionComponent();
+    userService = new UserServiceImpl(userRepository, encryptionComponent);
+  }
+
+  @AfterEach
+  void tearDown() {
+    userService = null;
+    userRepository = null;
+    encryptionComponent = null;
+  }
+
+  @Test
+  void getUserById_validId_returnsUser() {
+    // GIVEN: A valid user ID
+    String id = "123";
+
+    // WHEN: The getUserById method is called with the valid ID
+    User user = userService.getUserById(id);
+
+    // THEN: A user object is returned
+    assertNotNull(user);
+  }
+
+  @Test
+  void getAuthenticatedUser_validCredentials_returnsUser() {
+    // GIVEN: Valid email and password
+    String email = "test@example.com";
+    String rawPw = "password";
+
+    // WHEN: The getAuthenticatedUser method is called with the valid credentials
+    User user = userService.getAuthenticatedUser(email, rawPw);
+
+    // THEN: The user object is returned
+    assertNotNull(user);
+    assertEquals("test@example.com", user.getEmail());
+  }
+
+  @Test
+  void generateUser_validRequest_returnsUserResponse() {
+    // GIVEN: A valid UserRequest
+    UserRequest request = new UserRequest() {
+      @Override
+      public User convert(String id, String password) {
+        return new User();
+      }
+    };
+    String password = "password";
+
+    // WHEN: The generateUser method is called with the valid request
+    UserResponse response = userService.generateUser(request);
+
+    // THEN: A UserResponse object is returned
+    assertNotNull(response);
+    assertEquals("123", response.getId());
+    assertEquals("test@example.com", response.getEmail());
+    assertEquals("test", response.getUsername());
+  }
+
+  @Test
+  void getUserByEmail_validEmail_returnsUser() {
+    // GIVEN: A valid email
+    String email = "test@example.com";
+
+    // WHEN: The getUserByEmail method is called with the valid email
+    User user = userService.getUserByEmail(email);
+
+    // THEN: A user object is returned
+    assertNotNull(user);
+    assertEquals("test@example.com", user.getEmail());
+  }
+}
