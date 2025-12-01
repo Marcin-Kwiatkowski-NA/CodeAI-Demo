@@ -1,0 +1,267 @@
+package com.bestpractice.api.domain.service;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.AfterAll;
+
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doThrow;
+
+import com.bestpractice.api.common.exception.BadRequest;
+import com.bestpractice.api.common.exception.Conflict;
+import com.bestpractice.api.common.exception.InternalServerError;
+import com.bestpractice.api.domain.model.InfoRequest;
+import com.bestpractice.api.domain.model.InfoResponse;
+import com.bestpractice.api.infrastrucuture.entity.Info;
+import com.bestpractice.api.infrastrucuture.persistent.InfoPersistentRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@ExtendWith(MockitoExtension.class)
+public class InfoServiceImplGeneratedAiTests {
+
+    @Mock
+    private InfoPersistentRepository infoRepository;
+
+    @InjectMocks
+    private InfoServiceImpl infoService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetInfos() {
+        // GIVEN
+        List<Info> mockInfoList = new ArrayList<>();
+        Info info1 = new Info();
+        info1.setId("1");
+        info1.setTitle("Title1");
+        info1.setDescription("Description1");
+        Info info2 = new Info();
+        info2.setId("2");
+        info2.setTitle("Title2");
+        info2.setDescription("Description2");
+        mockInfoList.add(info1);
+        mockInfoList.add(info2);
+        when(infoRepository.findAll()).thenReturn(mockInfoList);
+
+        // WHEN
+        List<InfoResponse> result = infoService.getInfos();
+
+        // THEN
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getId()).isEqualTo("1");
+        assertThat(result.get(0).getTitle()).isEqualTo("Title1");
+        assertThat(result.get(0).getDescription()).isEqualTo("Description1");
+        assertThat(result.get(1).getId()).isEqualTo("2");
+        assertThat(result.get(1).getTitle()).isEqualTo("Title2");
+        assertThat(result.get(1).getDescription()).isEqualTo("Description2");
+        verify(infoRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetInfosThrowsInternalServerError() {
+        // GIVEN
+        when(infoRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.getInfos())
+                .isInstanceOf(InternalServerError.class)
+                .hasMessageContaining("Database error");
+        verify(infoRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetInfo() {
+        // GIVEN
+        Info mockInfo = new Info();
+        mockInfo.setId("1");
+        mockInfo.setTitle("Title1");
+        mockInfo.setDescription("Description1");
+        when(infoRepository.findById("1")).thenReturn(mockInfo);
+
+        // WHEN
+        InfoResponse result = infoService.getInfo("1");
+
+        // THEN
+        assertThat(result.getId()).isEqualTo("1");
+        assertThat(result.getTitle()).isEqualTo("Title1");
+        assertThat(result.getDescription()).isEqualTo("Description1");
+        verify(infoRepository, times(1)).findById("1");
+    }
+
+    @Test
+    void testGetInfoThrowsInternalServerError() {
+        // GIVEN
+        when(infoRepository.findById("1")).thenThrow(new RuntimeException("Database error"));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.getInfo("1"))
+                .isInstanceOf(InternalServerError.class)
+                .hasMessageContaining("Database error");
+        verify(infoRepository, times(1)).findById("1");
+    }
+
+    @Test
+    void testUpdateInfo() {
+        // GIVEN
+        Info mockInfo = new Info();
+        mockInfo.setId("1");
+        mockInfo.setTitle("OldTitle");
+        mockInfo.setDescription("OldDescription");
+        InfoRequest mockRequest = new InfoRequest();
+        mockRequest.setTitle("NewTitle");
+        mockRequest.setDescription("NewDescription");
+        Info updatedInfo = mockRequest.convert("1");
+
+        when(infoRepository.findById("1")).thenReturn(mockInfo);
+        when(infoRepository.insert(updatedInfo)).thenReturn(updatedInfo);
+
+        // WHEN
+        InfoResponse result = infoService.updateInfo("1", mockRequest);
+
+        // THEN
+        assertThat(result.getId()).isEqualTo("1");
+        assertThat(result.getTitle()).isEqualTo("NewTitle");
+        assertThat(result.getDescription()).isEqualTo("NewDescription");
+        verify(infoRepository, times(1)).findById("1");
+        verify(infoRepository, times(1)).insert(updatedInfo);
+    }
+
+    @Test
+    void testUpdateInfoThrowsBadRequest() {
+        // GIVEN
+        when(infoRepository.findById("1")).thenThrow(new RuntimeException("Not found"));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.updateInfo("1", new InfoRequest()))
+                .isInstanceOf(BadRequest.class);
+        verify(infoRepository, times(1)).findById("1");
+    }
+
+    @Test
+    void testUpdateInfoThrowsInternalServerError() {
+        // GIVEN
+        Info mockInfo = new Info();
+        mockInfo.setId("1");
+        mockInfo.setTitle("OldTitle");
+        mockInfo.setDescription("OldDescription");
+        InfoRequest mockRequest = new InfoRequest();
+        mockRequest.setTitle("NewTitle");
+        mockRequest.setDescription("NewDescription");
+        Info updatedInfo = mockRequest.convert("1");
+
+        when(infoRepository.findById("1")).thenReturn(mockInfo);
+        when(infoRepository.insert(updatedInfo)).thenThrow(new RuntimeException("Database error"));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.updateInfo("1", mockRequest))
+                .isInstanceOf(InternalServerError.class)
+                .hasMessageContaining("Database error");
+        verify(infoRepository, times(1)).findById("1");
+        verify(infoRepository, times(1)).insert(updatedInfo);
+    }
+
+    @Test
+    void testGenerateInfo() {
+        // GIVEN
+        InfoRequest mockRequest = new InfoRequest();
+        mockRequest.setTitle("Title");
+        mockRequest.setDescription("Description");
+        Info mockInfo = mockRequest.convert("1");
+
+        when(infoRepository.newId()).thenReturn("1");
+        when(infoRepository.insert(mockInfo)).thenReturn(mockInfo);
+
+        // WHEN
+        InfoResponse result = infoService.generateInfo(mockRequest);
+
+        // THEN
+        assertThat(result.getId()).isEqualTo("1");
+        assertThat(result.getTitle()).isEqualTo("Title");
+        assertThat(result.getDescription()).isEqualTo("Description");
+        verify(infoRepository, times(1)).newId();
+        verify(infoRepository, times(1)).insert(mockInfo);
+    }
+
+    @Test
+    void testGenerateInfoThrowsConflict() {
+        // GIVEN
+        InfoRequest mockRequest = new InfoRequest();
+        mockRequest.setTitle("Title");
+        mockRequest.setDescription("Description");
+        Info mockInfo = mockRequest.convert("1");
+
+        when(infoRepository.newId()).thenReturn("1");
+        when(infoRepository.insert(mockInfo)).thenThrow(new Conflict("Conflict error"));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.generateInfo(mockRequest))
+                .isInstanceOf(Conflict.class)
+                .hasMessageContaining("Conflict error");
+        verify(infoRepository, times(1)).newId();
+        verify(infoRepository, times(1)).insert(mockInfo);
+    }
+
+    @Test
+    void testGenerateInfoThrowsInternalServerError() {
+        // GIVEN
+        InfoRequest mockRequest = new InfoRequest();
+        mockRequest.setTitle("Title");
+        mockRequest.setDescription("Description");
+        Info mockInfo = mockRequest.convert("1");
+
+        when(infoRepository.newId()).thenReturn("1");
+        when(infoRepository.insert(mockInfo)).thenThrow(new RuntimeException("Database error"));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.generateInfo(mockRequest))
+                .isInstanceOf(InternalServerError.class)
+                .hasMessageContaining("Database error");
+        verify(infoRepository, times(1)).newId();
+        verify(infoRepository, times(1)).insert(mockInfo);
+    }
+
+    @Test
+    void testDeleteInfo() {
+        // GIVEN
+        String id = "1";
+
+        // WHEN
+        infoService.deleteInfo(id);
+
+        // THEN
+        verify(infoRepository, times(1)).removeById(id);
+    }
+
+    @Test
+    void testDeleteInfoThrowsInternalServerError() {
+        // GIVEN
+        String id = "1";
+        doThrow(new RuntimeException("Database error")).when(infoRepository).removeById(id);
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> infoService.deleteInfo(id))
+                .isInstanceOf(InternalServerError.class)
+                .hasMessageContaining("Database error");
+        verify(infoRepository, times(1)).removeById(id);
+    }
+}
