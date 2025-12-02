@@ -1,0 +1,79 @@
+package com.bestpractice.api.domain.model;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeAll;
+
+import static org.mockito.Mockito.mock;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Date;
+
+class AuthResponseGeneratedAiTests {
+
+    private static final String TOKEN_TYPE = "Bearer";
+    private static final String TOKEN = "sampleToken";
+    private static final String REFRESH_TOKEN = "sampleRefreshToken";
+    private static final Date EXPIRES_AT = new Date();
+
+    private AuthResponse authResponse;
+
+    @BeforeEach
+    void setUp() {
+        // Reset state before each test
+        authResponse = new AuthResponse(TOKEN_TYPE, TOKEN, REFRESH_TOKEN, EXPIRES_AT);
+    }
+
+    @Test
+    void givenAuthResponse_whenGetTokenType_thenReturnsCorrectTokenType() {
+        // GIVEN: An AuthResponse object initialized with a token type
+
+        // WHEN: Retrieving the token type
+        String actualTokenType = authResponse.getTokenType();
+
+        // THEN: The token type should match the expected value
+        assertThat(actualTokenType).isEqualTo(TOKEN_TYPE);
+    }
+
+    @Test
+    void givenAuthResponse_whenGetToken_thenReturnsCorrectToken() {
+        // GIVEN: An AuthResponse object initialized with a token
+
+        // WHEN: Retrieving the token
+        String actualToken = authResponse.getToken();
+
+        // THEN: The token should match the expected value
+        assertThat(actualToken).isEqualTo(TOKEN);
+    }
+
+    @Test
+    void givenAuthResponse_whenGetRefreshToken_thenReturnsCorrectRefreshToken() {
+        // GIVEN: An AuthResponse object initialized with a refresh token
+
+        // WHEN: Retrieving the refresh token
+        String actualRefreshToken = authResponse.getRefreshToken();
+
+        // THEN: The refresh token should match the expected value
+        assertThat(actualRefreshToken).isEqualTo(REFRESH_TOKEN);
+    }
+
+    @Test
+    void givenAuthResponse_whenGetExpiresAt_thenReturnsCorrectExpiresAt() {
+        // GIVEN: An AuthResponse object initialized with an expiration date
+
+        // WHEN: Retrieving the expiration date
+        Date actualExpiresAt = authResponse.getExpiresAt();
+
+        // THEN: The expiration date should match the expected value
+        assertThat(actualExpiresAt).isEqualTo(EXPIRES_AT);
+    }
+}
