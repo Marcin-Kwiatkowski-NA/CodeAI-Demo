@@ -1,0 +1,161 @@
+package com.bestpractice.api.domain.component;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class RequestInfoComponentGeneratedAiTests {
+
+    private RequestInfoComponent requestInfoComponent;
+
+    @BeforeEach
+    void setUp() {
+        requestInfoComponent = new RequestInfoComponent();
+    }
+
+    @Test
+    void testSetAndGetUserId() {
+        // GIVEN
+        String expectedUserId = "user123";
+
+        // WHEN
+        requestInfoComponent.setUserId(expectedUserId);
+        String actualUserId = requestInfoComponent.getUserId();
+
+        // THEN
+        assertEquals(expectedUserId, actualUserId);
+    }
+
+    @Test
+    void testSetAndGetUserEmail() {
+        // GIVEN
+        String expectedEmail = "test@example.com";
+
+        // WHEN
+        requestInfoComponent.setUserEmail(expectedEmail);
+        String actualEmail = requestInfoComponent.getUserEmail();
+
+        // THEN
+        assertEquals(expectedEmail, actualEmail);
+    }
+
+    @Test
+    void testSetAndIsRefreshTokenTrue() {
+        // GIVEN
+        boolean expectedValue = true;
+
+        // WHEN
+        requestInfoComponent.setRefreshToken(expectedValue);
+        boolean actualValue = requestInfoComponent.isRefreshToken();
+
+        // THEN
+        assertTrue(actualValue);
+    }
+
+    @Test
+    void testSetAndIsRefreshTokenFalse() {
+        // GIVEN
+        boolean expectedValue = false;
+
+        // WHEN
+        requestInfoComponent.setRefreshToken(expectedValue);
+        boolean actualValue = requestInfoComponent.isRefreshToken();
+
+        // THEN
+        assertFalse(actualValue);
+    }
+
+    @Test
+    void testSetAndGetPath() {
+        // GIVEN
+        String expectedPath = "/api/test";
+
+        // WHEN
+        requestInfoComponent.setPath(expectedPath);
+        String actualPath = requestInfoComponent.getPath();
+
+        // THEN
+        assertEquals(expectedPath, actualPath);
+    }
+
+    @Test
+    void testSetAndGetHttpMethod() {
+        // GIVEN
+        String expectedMethod = "POST";
+
+        // WHEN
+        requestInfoComponent.setHttpMethod(expectedMethod);
+        String actualMethod = requestInfoComponent.getHttpMethod();
+
+        // THEN
+        assertEquals(expectedMethod, actualMethod);
+    }
+
+    @Test
+    void testSetAndGetRequestId() {
+        // GIVEN
+        String expectedRequestId = "req-001";
+
+        // WHEN
+        requestInfoComponent.setRequestId(expectedRequestId);
+        String actualRequestId = requestInfoComponent.getRequestId();
+
+        // THEN
+        assertEquals(expectedRequestId, actualRequestId);
+    }
+
+    @Test
+    void testSettersHandleNullValuesGracefully() {
+        // GIVEN
+        String nullValue = null;
+
+        // WHEN
+        requestInfoComponent.setUserId(nullValue);
+        requestInfoComponent.setUserEmail(nullValue);
+        requestInfoComponent.setPath(nullValue);
+        requestInfoComponent.setHttpMethod(nullValue);
+        requestInfoComponent.setRequestId(nullValue);
+
+        // THEN
+        assertEquals(nullValue, requestInfoComponent.getUserId());
+        assertEquals(nullValue, requestInfoComponent.getUserEmail());
+        assertEquals(nullValue, requestInfoComponent.getPath());
+        assertEquals(nullValue, requestInfoComponent.getHttpMethod());
+        assertEquals(nullValue, requestInfoComponent.getRequestId());
+    }
+
+    @Test
+    void testDefaultValuesAfterInitialization() {
+        // GIVEN
+        // WHEN
+        String userId = requestInfoComponent.getUserId();
+        String userEmail = requestInfoComponent.getUserEmail();
+        boolean refreshToken = requestInfoComponent.isRefreshToken();
+        String path = requestInfoComponent.getPath();
+        String httpMethod = requestInfoComponent.getHttpMethod();
+        String requestId = requestInfoComponent.getRequestId();
+
+        // THEN
+        assertEquals(null, userId);
+        assertEquals(null, userEmail);
+        assertFalse(refreshToken);
+        assertEquals(null, path);
+        assertEquals(null, httpMethod);
+        assertEquals(null, requestId);
+    }
+}
